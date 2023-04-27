@@ -4,9 +4,8 @@ from pydantic import BaseSettings, EmailStr
 
 
 class Settings(BaseSettings):
-    app_title: str = 'Бронирование переговорок'
-    description: str = 'Забронируй переговорку'
-    database_url: str
+    app_title: str = 'Сервис пожертвований на нужды котиков'
+    database_url: str = 'sqlite+aiosqlite:///./fastapi.db'
     secret: str = 'SECRET'
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None
