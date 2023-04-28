@@ -8,7 +8,7 @@ from app.core.db import get_async_session
 from app.core.user import current_user, current_superuser
 from app.crud.donation import donation_crud
 from app.models import User
-from app.services.donation_to_project import donation_to_project_func
+from app.services.donation_to_project import donations_to_projects
 from app.schemas.donation import (
     DonationBase, DonationBD, DonationGetByUser
 )
@@ -26,6 +26,8 @@ router = APIRouter()
 async def get_all_donations(
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только суперюзеру"""
+
     all_donations = await donation_crud.get_multi(session)
     return all_donations
 
@@ -40,10 +42,12 @@ async def create_donation(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только авторизованным юзерам"""
+
     new_donation = await donation_crud.create(
         donation, session, user
     )
-    await donation_to_project_func(session)
+    await donations_to_projects(session)
     await session.refresh(new_donation)
     return new_donation
 
@@ -56,5 +60,7 @@ async def get_user_donations(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только авторизованным юзерам"""
+
     donations = await donation_crud.get_by_user(user, session)
     return donations

@@ -12,7 +12,7 @@ from app.api.validators import (
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
-from app.services.donation_to_project import donation_to_project_func
+from app.services.donation_to_project import donations_to_projects
 from app.schemas.charity_project import (
     CharityProjectBase, CharityProjectBD,
     CharityProjectUpdate,
@@ -32,10 +32,12 @@ async def create_charity_project(
     charity_project: CharityProjectBase,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только суперюзеру"""
+
     await check_unique_project_name(charity_project, session)
     new_project = await charity_project_crud.create(
         charity_project, session)
-    await donation_to_project_func(session)
+    await donations_to_projects(session)
     await session.refresh(new_project)
     return new_project
 
@@ -61,6 +63,8 @@ async def delete_charity_project(
     project_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только суперюзеру"""
+
     charity_project = await check_project_is_exists(
         project_id, session
     )
@@ -86,6 +90,8 @@ async def update_charity_project(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """Доступно только суперюзеру"""
+
     charity_project = await check_project_is_exists(
         project_id, session
     )
