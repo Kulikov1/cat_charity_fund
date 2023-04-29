@@ -1,1 +1,18 @@
-Generic single-database configuration with an async dbapi.
+# Основные команды
+Создание миграции(будет создана миграция с названием "First migration")
+```
+alembic revision --autogenerate -m "First migration"
+```
+Применение миграции до последней
+```
+alembic upgrade head
+```
+Откат миграций
+```
+alembic downgrade
+```
+Просмотр текущей миграции
+```
+alembic current
+```
+Используйте параметр -h или --help для просмотра дополнительных команд
